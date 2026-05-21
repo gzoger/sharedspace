@@ -6,7 +6,7 @@ Use this Firebase project configuration later when wiring the app to Firebase.
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCdqvQUNxTHbZFsz8rWT3dLkUKfNPGqGpw",
+  apiKey: "",
   authDomain: "sharedspace-50c52.firebaseapp.com",
   projectId: "sharedspace-50c52",
   storageBucket: "sharedspace-50c52.firebasestorage.app",
