@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && (
+          request.auth.token.email == "genadiy.zoger@gmail.com"
+          || request.auth.uid == "PASTE_GENADIY_UID_HERE"
+        );
+    }
+
+    match /users/{userId}/{allPaths=**} {
+      allow read, write, delete: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+  }
+}

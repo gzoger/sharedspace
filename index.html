@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SharedSpace Video Library</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section class="auth-screen" data-view="signed-out">
+        <div class="auth-panel">
+          <div class="brand-mark">S</div>
+          <h1>SharedSpace</h1>
+          <p>Collect videos, save transcripts, track what you already used, and keep every content idea tied to the original source.</p>
+          <button class="primary-button" id="googleSignInButton" type="button">
+            <span class="google-dot"></span>
+            Continue with Google
+          </button>
+          <p class="fine-print">Your library is stored in your Firebase project and scoped to your Google account.</p>
+        </div>
+      </section>
+
+      <main class="workspace hidden" data-view="signed-in">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Video content library</p>
+            <h1>SharedSpace</h1>
+          </div>
+          <div class="profile-area">
+            <div class="profile-copy">
+              <span id="userName">Signed in</span>
+              <small id="userEmail"></small>
+              <small id="userUid" class="uid-line"></small>
+            </div>
+            <button class="ghost-button" id="signOutButton" type="button">Sign out</button>
+          </div>
+        </header>
+
+        <section class="stats-grid" aria-label="Library stats">
+          <article class="stat-card">
+            <span>Total videos</span>
+            <strong id="totalCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Unused</span>
+            <strong id="unusedCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Used for content</span>
+            <strong id="usedCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>With transcripts</span>
+            <strong id="transcriptCount">0</strong>
+          </article>
+        </section>
+
+        <section class="toolbar" aria-label="Video filters">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" /></svg>
+            <input id="searchInput" type="search" placeholder="Search titles, transcripts, notes, or tags" />
+          </div>
+          <div class="filter-tabs admin-scope hidden" id="adminScopeTabs" role="tablist" aria-label="Library scope">
+            <button class="active" data-scope="mine" type="button">My videos</button>
+            <button data-scope="all" type="button">All users</button>
+          </div>
+          <div class="filter-tabs" role="tablist" aria-label="Usage status">
+            <button class="active" data-filter="all" type="button">All</button>
+            <button data-filter="unused" type="button">Unused</button>
+            <button data-filter="used" type="button">Used</button>
+            <button data-filter="with-transcript" type="button">With transcript</button>
+            <button data-filter="empty-transcript" type="button">No transcript</button>
+          </div>
+          <button class="primary-button compact" id="newVideoButton" type="button">Add video</button>
+        </section>
+
+        <section class="content-shell">
+          <div class="video-list" id="videoList" aria-live="polite"></div>
+
+          <aside class="detail-panel empty" id="detailPanel">
+            <div class="empty-state">
+              <h2>Select a video</h2>
+              <p>Click any item to edit its transcript, notes, source, files, and content usage status.</p>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="videoDialog">
+      <form id="videoForm" method="dialog" class="video-form">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow">New library item</p>
+            <h2>Add video</h2>
+          </div>
+          <button class="icon-button" value="cancel" type="button" id="closeDialogButton" aria-label="Close">×</button>
+        </div>
+
+        <label>
+          <span class="label-with-action">
+            Title
+            <button class="small-action-button" id="suggestTitleButton" type="button">Suggest title</button>
+          </span>
+          <input id="titleInput" name="title" placeholder="Auto-created if empty" />
+        </label>
+
+        <label>
+          Source URL
+          <input id="urlInput" name="url" type="url" placeholder="https://..." />
+        </label>
+
+        <div class="split-fields">
+          <label>
+            Platform
+            <input id="platformInput" name="platform" placeholder="YouTube, TikTok, Drive..." />
+          </label>
+          <label>
+            Tags
+            <input id="tagsInput" name="tags" placeholder="ads, hook, testimonial" />
+          </label>
+        </div>
+
+        <label>
+          Upload video or reference file
+          <input id="fileInput" name="file" type="file" accept="video/*,audio/*,image/*,.pdf" />
+        </label>
+
+        <div class="split-fields">
+          <label>
+            Thumbnail URL
+            <input id="thumbnailUrlInput" name="thumbnailUrl" type="url" placeholder="https://..." />
+          </label>
+          <label>
+            Upload thumbnail
+            <input id="thumbnailFileInput" name="thumbnailFile" type="file" accept="image/*" />
+          </label>
+        </div>
+
+        <label>
+          Transcript
+          <textarea id="transcriptInput" name="transcript" rows="7" placeholder="Paste the video transcript here"></textarea>
+        </label>
+
+        <label>
+          Notes / content angle
+          <textarea id="notesInput" name="notes" rows="4" placeholder="What should this become? Short, carousel, ad, article..."></textarea>
+        </label>
+
+        <label class="checkbox-row">
+          <input id="usedInput" name="used" type="checkbox" />
+          Already used this video for content
+        </label>
+
+        <div class="dialog-actions">
+          <button class="ghost-button" type="button" id="cancelVideoButton">Cancel</button>
+          <button class="primary-button" type="submit" id="saveVideoButton">Save video</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
