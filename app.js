@@ -28,7 +28,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCdqvQUNxTHbZFsz8rWT3dLkUKfNPGqGpw",
+  apiKey: "",
   authDomain: "sharedspace-50c52.firebaseapp.com",
   projectId: "sharedspace-50c52",
   storageBucket: "sharedspace-50c52.firebasestorage.app",
